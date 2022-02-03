@@ -41,7 +41,7 @@ class PoliciaService {
     */
     public async getPolicia( request: IGetRequest | any = {} ) {
         const { limit = 40, offset = 0, ...where } = this.verifyQuery(request?.query);
-        where['id_policia'] = request?.params;
+        where['id_policia'] = request?.params.id_policia;
         return VW_PoliciaModel.findAndCountAll({ 
             where,
             limit,
@@ -70,7 +70,7 @@ class PoliciaService {
         const update = await data?.update(body) || null;
 
         if (update) {
-            this.auditoria.InsertarAuditoria(Tables.Policia, Number(1), Actions.Update);
+            this.auditoria.InsertarAuditoria(Tables.Policia, Number(1), params.id_policia, Actions.Update);
             return this.getPolicias(this.verifyQuery(query));
         }
         return null;
@@ -95,7 +95,7 @@ class PoliciaService {
         const data = await TBL_PoliciaModel.create(body) || null;
 
         if (data) {
-            this.auditoria.InsertarAuditoria(Tables.Policia, Number(1), Actions.Insert);
+            this.auditoria.InsertarAuditoria(Tables.Policia, Number(1), body.id_policia, Actions.Insert);
             return this.getPolicias(this.verifyQuery(query));
         }
         return null;
@@ -112,7 +112,7 @@ class PoliciaService {
         const policia = await this.putPolicia(request);
 
         if (policia) {
-            this.auditoria.InsertarAuditoria(Tables.Policia, Number(params.id_jwt), Actions.Delete);
+            this.auditoria.InsertarAuditoria(Tables.Policia, Number(params.id_jwt), params.id_policia, Actions.Delete);
             return policia;
         }
         return null;

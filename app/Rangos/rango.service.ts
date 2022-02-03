@@ -39,7 +39,7 @@ class RangoService {
     */
     public async getRango( request: IGetRequest | any = {} ) {
         const { limit = 40, offset = 0, ...where } = this.verifyQuery(request?.query);
-        where['id_rango'] = request?.params;
+        where['id_rango'] = request?.params.id_rango;
         return VW_RangoModel.findAndCountAll({ 
             where,
             limit,
@@ -66,7 +66,7 @@ class RangoService {
         const update = await data?.update(body) || null;
 
         if (update) {
-            this.auditoria.InsertarAuditoria(Tables.Rango, Number(1), Actions.Update);
+            this.auditoria.InsertarAuditoria(Tables.Rango, Number(1), params.id_rango, Actions.Update);
             return this.getRangos(this.verifyQuery(query));
         }
         return null;
@@ -89,7 +89,7 @@ class RangoService {
         const data = await TBL_RangoModel.create(body) || null;
 
         if (data) {
-            this.auditoria.InsertarAuditoria(Tables.Rango, Number(1), Actions.Insert);
+            this.auditoria.InsertarAuditoria(Tables.Rango, Number(1), body.id_rango, Actions.Insert);
             return this.getRangos(this.verifyQuery(query));
         }
         return null;
@@ -106,7 +106,7 @@ class RangoService {
         const rango = await this.putRango(request);
 
         if (rango) {
-            this.auditoria.InsertarAuditoria(Tables.Rango, Number(params.id_jwt), Actions.Delete);
+            this.auditoria.InsertarAuditoria(Tables.Rango, Number(params.id_jwt), params.id_rango, Actions.Delete);
             return rango;
         }
         return null;

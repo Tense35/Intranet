@@ -14,12 +14,13 @@ class Auditoria {
     * Inserta información en la tabla de Auditoría para logs de trazabilidad
     * @param {Tables} id_tabla Identificador del rango que se desea buscar
     * @param {number} id_policia Identificador del policía que ejecuta la acción en la base de datos
+    * @param {number} primary_key Llave primaria afectada
     * @param {Actions} accion Acción que se realiza a nivel de base de datos (Update, Insert, etc..)
     * @return {Promise<Boolean>} Retorna un booleano indicando si la inserción fue correcta o no
     */
-    public async InsertarAuditoria(id_tabla: Tables, id_policia: number, accion: Actions): Promise<boolean> {
-        db.query('EXEC SP_Auditoria :FK_tabla, :FK_policia, :FK_accion;', { 
-            replacements: { FK_tabla: id_tabla, FK_policia: id_policia, FK_accion: accion}
+    public async InsertarAuditoria(id_tabla: Tables, id_policia: number, primary_key: number, accion: Actions): Promise<boolean> {
+        db.query('EXEC SP_Auditoria :FK_tabla, :FK_policia, :primary_key, :FK_accion;', { 
+            replacements: { FK_tabla: id_tabla, FK_policia: id_policia, primary_key, FK_accion: accion }
         })
         .then(() => {
             return true;
