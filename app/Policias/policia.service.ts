@@ -59,11 +59,10 @@ class PoliciaService {
         const { body, params, files, query } = request;
 
         const { data } = await this.policiaExistente(params.id_policia);
-        if ( files ) {
-            body.imagen = (data.imagen)
-            ? await this.uploadFiles.update(files, data.imagen)
-            : await this.uploadFiles.upload(files);
-        }
+        body.imagen = (data.imagen)
+        ? await this.uploadFiles.update(files, data.imagen)
+        : await this.uploadFiles.upload(files);
+        
         if ( body.id_rango ) body['PK_rango'] = body.id_rango;
         if ( body.pass ) body['pass'] = this.security.Encrypt(body.pass);
 
@@ -84,11 +83,7 @@ class PoliciaService {
     public async postPolicia( request: IPostRequest | any = {} ) { 
         const { body, params, files, query } = request;
 
-        if ( files ) {
-            const imgUrl = await this.uploadFiles.upload( files );
-            if ( imgUrl ) body.imagen = imgUrl;
-        }
-
+        body.imagen = await this.uploadFiles.upload( files );
         body['PK_policia'] = body.id_policia;
         body['PK_rango'] = body.id_rango;
         body['pass'] = this.security.Encrypt(body.pass);

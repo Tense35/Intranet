@@ -57,11 +57,10 @@ class RangoService {
         const { body, params, files, query } = request;
 
         const { data } = await this.rangoExistente(params.id_rango);
-        if ( files ) {
-            body.imagen = (data.imagen)
-            ? await this.uploadFiles.update(files, data.imagen)
-            : await this.uploadFiles.upload(files);
-        }
+
+        body.imagen = (data.imagen)
+        ? await this.uploadFiles.update(files, data.imagen)
+        : await this.uploadFiles.upload(files);
 
         const update = await data?.update(body) || null;
 
@@ -80,11 +79,7 @@ class RangoService {
     public async postRango( request: IPostRequest | any = {} ) { 
         const { body, params, files, query } = request;
 
-        if ( files ) {
-            const imgUrl = await this.uploadFiles.upload( files );
-            if ( imgUrl ) body.imagen = imgUrl;
-        }
-
+        body.imagen = await this.uploadFiles.upload( files );
         body['PK_rango'] = body.id_rango;
         const data = await TBL_RangoModel.create(body) || null;
 
